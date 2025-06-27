@@ -1,15 +1,18 @@
 import styled from "styled-components";
 import {useEffect, useState} from "react";
-import type {Mole} from "../types/Mole.ts";
+import type {MoleType} from "../types/Mole.ts";
 import {PlayerData} from "./PlayerData.tsx";
+import {Timer} from "./Timer.tsx";
+import {Mole} from "./Mole.tsx";
 
 export function Gameboard() {
 
     const MOLES_NUMBER = 12;
+    const SCORE_INCREMENTATION = 100;
     const MOLE_VISIBILITY_MS = 1000;
     const MOLE_DISPLAY_INTERVAL_MS = 3000;
 
-    const [moles, setMoles] = useState<Mole[]>(() =>
+    const [moles, setMoles] = useState<MoleType[]>(() =>
         Array.from({length: MOLES_NUMBER}, () => ({
             id: crypto.randomUUID(),
             isHidden: true,
@@ -42,7 +45,7 @@ export function Gameboard() {
      * Update the score to 100
      */
     function updateScore() {
-        setScore(score => score + 100)
+        setScore(score => score + SCORE_INCREMENTATION)
     }
 
     useEffect(() => {
@@ -52,7 +55,7 @@ export function Gameboard() {
          * @param isHidden Whether the mole should be hidden or not
          */
         function toggleMoleVisibility(moleIndex: number, isHidden: boolean): void {
-            setMoles(prevMoles => prevMoles.map((mole: Mole, index: number) => {
+            setMoles(prevMoles => prevMoles.map((mole: MoleType, index: number) => {
                 if (moleIndex === index) {
                     return {...mole, isHidden, isTouched: false};
                 }
@@ -86,11 +89,9 @@ export function Gameboard() {
                 <div className="gameboard__container">
                     <PlayerData score={score}></PlayerData>
                     <ul className="gameboard__list">
-                        {moles.map((mole: Mole) => (
+                        {moles.map((mole: MoleType) => (
                             <li key={mole.id}>
-                                {!mole.isHidden &&
-                                    <img src='WAM_Mole.png' alt='Mole' onClick={() => onMoleClick(mole.id)}/>}
-                                {mole.isHidden && <img src='WAM_Hole.png' alt='Hole'/>}
+                                <Mole mole={mole} onMoleClick={onMoleClick} scoreUpdate={SCORE_INCREMENTATION}></Mole>
                             </li>
                         ))}
                     </ul>
