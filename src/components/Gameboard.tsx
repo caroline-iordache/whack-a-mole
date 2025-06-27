@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import {useEffect, useState} from "react";
 import type {Mole} from "../types/Mole.ts";
+import {PlayerData} from "./PlayerData.tsx";
 
 export function Gameboard() {
 
@@ -15,6 +16,34 @@ export function Gameboard() {
             isTouched: false
         }))
     );
+
+    const [score, setScore] = useState<number>(0);
+
+    function onMoleClick(moleId: string) {
+        whackMole(moleId);
+        updateScore()
+    }
+
+    /**
+     * When mole is whack set isTouched to true
+     * @param moleId the whacked mole id
+     */
+    function whackMole(moleId: string) {
+        setMoles(prevMole => prevMole.map(mole => {
+                if (mole.id === moleId) {
+                    return {...mole, isTouched: true}
+                }
+                return {...mole}
+            })
+        )
+    }
+
+    /**
+     * Update the score to 100
+     */
+    function updateScore() {
+        setScore(score => score + 100)
+    }
 
     useEffect(() => {
         /**
@@ -47,20 +76,25 @@ export function Gameboard() {
                 return () => clearInterval(visibilityIntervalId);
             }, MOLE_DISPLAY_INTERVAL_MS)
         }
+
         addMoleVisibilityInterval()
     }, []);
 
     return (
         <StyledGameboard>
             <div className="gameboard">
-                <ul className="gameboard__list">
-                    {moles.map((mole: Mole) => (
-                        <li key={mole.id}>
-                            {!mole.isHidden && <img src='WAM_Mole.png' alt='Mole'/>}
-                            {mole.isHidden && <img src='WAM_Hole.png' alt='Hole'/>}
-                        </li>
-                    ))}
-                </ul>
+                <div className="gameboard__container">
+                    <PlayerData score={score}></PlayerData>
+                    <ul className="gameboard__list">
+                        {moles.map((mole: Mole) => (
+                            <li key={mole.id}>
+                                {!mole.isHidden &&
+                                    <img src='WAM_Mole.png' alt='Mole' onClick={() => onMoleClick(mole.id)}/>}
+                                {mole.isHidden && <img src='WAM_Hole.png' alt='Hole'/>}
+                            </li>
+                        ))}
+                    </ul>
+                </div>
             </div>
         </StyledGameboard>
     )
@@ -70,20 +104,27 @@ const StyledGameboard = styled.div`
     .gameboard {
         display: flex;
         justify-content: center;
-        align-items: center;
         height: 100vh;
         width: 100vw;
         background-image: url("WAM_bg.jpg");
-        background-size: 100% 100%; 
+        background-size: 100% 100%;
+
+        &__container {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            max-width: 1500px;
+            align-items: center;
+        }
 
         &__list {
             list-style: none;
             display: grid;
-            justify-content: end;
             align-items: end;
             grid-gap: 50px;
             grid-template-columns: repeat(4, auto);
             grid-template-rows: 150px 150px 150px;
+            padding-left: 0;
         }
     }
 `;
