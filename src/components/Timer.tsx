@@ -1,14 +1,17 @@
 import {useEffect, useState} from "react";
+import type {GameStatus} from "../types/GameStatus.ts";
 
-export function Timer() {
+export function Timer({updateGameState}: { updateGameState: (status: GameStatus) => void }) {
     /**
      * Set timerState in second
      */
-    const [timer, setTimer] = useState<number>(120);
+    const [timer, setTimer] = useState<number>(3);
 
-    if (timer === 0) {
-        // TODO : FinishGame
-    }
+    useEffect(() => {
+        if (timer === 0) {
+            updateGameState('end');
+        }
+    }, [timer, updateGameState]);
 
     function getTimerInMinutes() {
         const minutes = Math.floor(timer / 60);
@@ -20,7 +23,12 @@ export function Timer() {
     useEffect(() => {
 
         const timerIntervalId = setInterval(() => {
-            setTimer(timing => timing - 1)
+            setTimer(prevTiming => {
+                if (prevTiming > 0) {
+                    return prevTiming - 1
+                }
+                return prevTiming;
+            })
         }, 1000)
 
         return () => clearInterval(timerIntervalId);

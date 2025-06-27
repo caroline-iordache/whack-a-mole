@@ -2,10 +2,11 @@ import styled from "styled-components";
 import {useEffect, useState} from "react";
 import type {MoleType} from "../types/Mole.ts";
 import {PlayerData} from "./PlayerData.tsx";
-import {Timer} from "./Timer.tsx";
 import {Mole} from "./Mole.tsx";
+import {Timer} from "./Timer.tsx";
+import type {GameStatus} from "../types/GameStatus.ts";
 
-export function Gameboard() {
+export function Gameboard({updateGameState}: { updateGameState: (status: GameStatus) => void }) {
 
     const MOLES_NUMBER = 12;
     const SCORE_INCREMENTATION = 100;
@@ -88,6 +89,7 @@ export function Gameboard() {
             <div className="gameboard">
                 <div className="gameboard__container">
                     <PlayerData score={score}></PlayerData>
+                    <Timer updateGameState={updateGameState}></Timer>
                     <ul className="gameboard__list">
                         {moles.map((mole: MoleType) => (
                             <li key={mole.id}>
@@ -103,20 +105,6 @@ export function Gameboard() {
 
 const StyledGameboard = styled.div`
     .gameboard {
-        display: flex;
-        justify-content: center;
-        height: 100vh;
-        width: 100vw;
-        background-image: url("WAM_bg.jpg");
-        background-size: 100% 100%;
-
-        &__container {
-            display: flex;
-            justify-content: center;
-            flex-direction: column;
-            max-width: 1500px;
-            align-items: center;
-        }
 
         &__list {
             list-style: none;
