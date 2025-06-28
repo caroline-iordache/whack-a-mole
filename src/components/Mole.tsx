@@ -9,8 +9,8 @@ export function Mole({mole, onMoleClick, scoreUpdate}: {
     return (
         <StyledMole>
             {!mole.isHidden &&
-                <img src='WAM_Mole.png' alt='Mole' onClick={() => onMoleClick(mole.id)}/>}
-            {mole.isHidden && <img src='WAM_Hole.png' alt='Hole'/>}
+                <img src='/WAM_Mole.png' alt='Mole' onClick={() => onMoleClick(mole.id)}/>}
+            {mole.isHidden && <img src='/WAM_Hole.png' alt='Hole'/>}
 
             {mole.isTouched && <span className='scoreUpdate'>+ {scoreUpdate}</span>}
 

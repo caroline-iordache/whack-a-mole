@@ -6,6 +6,7 @@ import type {GameStatus} from "../types/GameStatus.ts";
 import styled from "styled-components";
 import {useDispatch, useSelector} from "react-redux";
 import {userActions} from "../stores/user.ts";
+import {useHammerCursor} from "../hooks/useHammerCursor.tsx";
 
 
 export function GameSetter() {
@@ -13,6 +14,7 @@ export function GameSetter() {
     const [gameState, setGameState] = useState<GameStatus>('idle');
     const [error, setError] = useState<string | null>(null);
     const user = useSelector((state) => state.user);
+    useHammerCursor()
 
     useEffect(() => {
         dispatch(userActions.getUser({}));
