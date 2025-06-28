@@ -8,6 +8,7 @@ import {userActions} from "../stores/user.ts";
 
 
 export function Leaderboard() {
+    const SCORE_DISPLAY_LIMIT = 10;
     const dispatch = useDispatch()
     const [users, setUsers] = useState<User[]>([]);
     const [error, setError] = useState<string | null>(null);
@@ -28,7 +29,7 @@ export function Leaderboard() {
                     id,
                     ...user,
                 }));
-                const userSorted = userMapped.sort((a: User, b: User) => a.score - b.score).reverse().slice(0, 10);
+                const userSorted = userMapped.sort((a: User, b: User) => a.score - b.score).reverse().slice(0, SCORE_DISPLAY_LIMIT);
                 setUsers(userSorted);
 
             } catch (error) {
@@ -46,7 +47,7 @@ export function Leaderboard() {
 
     return (
         <StyledLeaderboard className="leaderboard">
-            <h1>10 Highest scores</h1>
+            <h1>{SCORE_DISPLAY_LIMIT} Highest scores</h1>
             <ol className='leaderboard__list'>
                 {users.map((user: User) => (
                     <li className='leaderboard__items' key={user.id}>

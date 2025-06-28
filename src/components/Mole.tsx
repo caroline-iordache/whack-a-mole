@@ -1,9 +1,9 @@
 import type {MoleType} from "../types/Mole.ts";
 import styled from "styled-components";
 import {CSSTransition} from "react-transition-group";
-import {useRef, useState} from "react";
+import {memo, useRef} from "react";
 
-export function Mole({mole, onMoleClick, scoreUpdate}: {
+export const Mole = memo(function Mole({mole, onMoleClick, scoreUpdate}: {
     mole: MoleType,
     onMoleClick: (mole: MoleType) => void,
     scoreUpdate: number
@@ -12,7 +12,7 @@ export function Mole({mole, onMoleClick, scoreUpdate}: {
 
     return (
         <StyledMole>
-            {!mole.isHidden && ! mole.isTouched &&
+            {!mole.isHidden && !mole.isTouched &&
                 <img src='/WAM_Mole.png' alt='Mole' onClick={() => onMoleClick(mole)}/>}
 
             {!mole.isHidden && mole.isTouched &&
@@ -21,13 +21,14 @@ export function Mole({mole, onMoleClick, scoreUpdate}: {
             {mole.isHidden &&
                 <img src='/WAM_Hole.png' alt='Hole'/>}
 
-            <CSSTransition className="scoreUp" in={mole.isTouched} unmountOnExit nodeRef={scoreUpRef} timeout={0} classNames="scoreUp">
+            <CSSTransition className="scoreUp" in={mole.isTouched} unmountOnExit nodeRef={scoreUpRef} timeout={0}
+                           classNames="scoreUp">
                 <span ref={scoreUpRef}>+ {scoreUpdate}</span>
             </CSSTransition>
 
         </StyledMole>
     )
-}
+});
 
 const StyledMole = styled.div`
     position: relative;
@@ -45,7 +46,7 @@ const StyledMole = styled.div`
         display: flex;
         border-radius: 5px;
     }
-    
+
     .scoreUp-enter-done {
         font-size: 30px;
     }

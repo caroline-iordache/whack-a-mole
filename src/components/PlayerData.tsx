@@ -1,8 +1,10 @@
 import styled from "styled-components";
 import {useSelector} from "react-redux";
 import {DataDisplay} from "./DataDispay.tsx";
+import type {ReactNode} from "react";
 
-export function PlayerData({score, children}: { score: number, children: any }) {
+
+export function PlayerData({children}: { children: ReactNode }) {
     const user = useSelector((state) => state.user);
 
     return (
@@ -12,11 +14,11 @@ export function PlayerData({score, children}: { score: number, children: any }) 
             </DataDisplay>
 
             <DataDisplay iconName={'icon-dice'}>
-                <span className="data__info">{score}</span>
+                {user.score}
             </DataDisplay>
 
             <DataDisplay iconName={'icon-clock2'}>
-                <span className="data__info"> {children}</span>
+                {children}
             </DataDisplay>
         </StyledPlayerData>
     )

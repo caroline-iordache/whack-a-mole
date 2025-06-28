@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import type {ReactNode} from "react";
+import {memo, type ReactNode} from "react";
 
-export function DataDisplay({iconName, children}: { iconName: string, children: ReactNode }) {
+export const DataDisplay = memo(function DataDisplay({iconName, children}: { iconName: string, children: ReactNode }) {
     return (
         <StyledDataDisplay className="data">
             <div className="data__icon-container">
@@ -10,7 +10,7 @@ export function DataDisplay({iconName, children}: { iconName: string, children: 
             <span className="data__info">{children}</span>
         </StyledDataDisplay>
     )
-}
+});
 
 const StyledDataDisplay = styled.div`
     height: 50px;

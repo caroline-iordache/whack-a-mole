@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import type {ReactNode} from "react";
 
-export function Button({children, onClick}: { children: ReactNode, onClick: () => void }) {
+export function Button({children, onClick}: { children: ReactNode, onClick?: () => void }) {
     return (
         <StyledButton onClick={onClick}>
             {children}

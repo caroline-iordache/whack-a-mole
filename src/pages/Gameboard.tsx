@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import type {MoleType} from "../types/Mole.ts";
 import {PlayerData} from "../components/PlayerData.tsx";
 import {Mole} from "../components/Mole.tsx";
@@ -14,8 +14,8 @@ export function Gameboard() {
 
     const MOLES_NUMBER = 12;
     const SCORE_INCREMENTATION = 100;
-    const MOLE_VISIBILITY_MS = 3000;
-    const MOLE_DISPLAY_INTERVAL_MS = 3000;
+    const MOLE_VISIBILITY_MS = 900;
+    const MOLE_DISPLAY_INTERVAL_MS = 1000;
 
     const [moles, setMoles] = useState<MoleType[]>(() =>
         Array.from({length: MOLES_NUMBER}, () => ({
@@ -26,30 +26,10 @@ export function Gameboard() {
     );
 
     /**
-     * When a mole is clicked:
-     * - Whack the mole
-     * - update the score
-     * - Change manually the visibility to show the score update
-     * @param mole the whacked mole
-     */
-    function onMoleClick(mole: MoleType): void {
-        if (!mole.isTouched && timer !== 0) {
-            whackMole(mole.id);
-            updateScore();
-            setTimeout(() => {
-                setMoles(prevMoles => prevMoles.map((mole: MoleType) => {
-                    return {...mole, isHidden: true, isTouched: false};
-                }));
-            }, 2000)
-        }
-
-    }
-
-    /**
      * When mole is whack set isTouched to true
      * @param moleId the whacked mole id
      */
-    function whackMole(moleId: string) {
+    const whackMole = useCallback((moleId: string) => {
         setMoles(prevMole => prevMole.map(mole => {
                 if (mole.id === moleId) {
                     return {...mole, isTouched: true}
@@ -57,14 +37,36 @@ export function Gameboard() {
                 return {...mole}
             })
         )
-    }
+    }, [setMoles]);
 
     /**
-     * Update the score to 100
+     * Update the score to SCORE_INCREMENTATION value
      */
-    function updateScore() {
+    const updateScore = useCallback(() => {
         dispatch(userActions.updateUserScore(SCORE_INCREMENTATION));
-    }
+    }, [dispatch])
+
+    /**
+     * When a mole is clicked:
+     * - Whack the mole
+     * - update the score
+     * - Change manually the visibility to show the score update
+     * @param mole the whacked mole
+     */
+    const onMoleClick = useCallback((whackedMole: MoleType) => {
+        if (!whackedMole.isTouched && timer !== 0) {
+            whackMole(whackedMole.id);
+            updateScore();
+            setTimeout(() => {
+                setMoles(prevMoles => prevMoles.map((mole: MoleType) => {
+                    if (whackedMole.id === mole.id) {
+                        return {...mole, isHidden: true, isTouched: false};
+                    }
+                    return mole;
+                }));
+            }, 2000)
+        }
+    }, [whackMole, updateScore, timer]);
 
     useEffect(() => {
         /**
@@ -85,28 +87,25 @@ export function Gameboard() {
          * Add an interval to set the mole visible (MOLE_VISIBILITY_MS)
          * Add a timeout to hidde the mole (MOLE_DISPLAY_INTERVAL_MS)
          */
-        function addMoleVisibilityInterval() {
-            const visibilityIntervalId = setInterval(() => {
-                const moleToShowIndex = Math.floor(Math.random() * MOLES_NUMBER);
-                toggleMoleVisibility(moleToShowIndex, false)
+        const visibilityIntervalId = setInterval(() => {
+            const moleToShowIndex = Math.floor(Math.random() * MOLES_NUMBER);
+            toggleMoleVisibility(moleToShowIndex, false)
 
+            setTimeout(() => {
+                toggleMoleVisibility(moleToShowIndex, true)
+            }, MOLE_VISIBILITY_MS)
+        }, MOLE_DISPLAY_INTERVAL_MS)
 
-                setTimeout(() => {
-                    toggleMoleVisibility(moleToShowIndex, true)
-                }, MOLE_VISIBILITY_MS)
-
-                return () => clearInterval(visibilityIntervalId);
-            }, MOLE_DISPLAY_INTERVAL_MS)
-        }
-
-        addMoleVisibilityInterval()
+        return () => clearInterval(visibilityIntervalId);
     }, []);
 
     return (
         <StyledGameboard>
             <div className="gameboard">
                 <div className="gameboard__container">
-                    <PlayerData score={user.score}> <Timer></Timer></PlayerData>
+                    <PlayerData>
+                        <Timer></Timer>
+                    </PlayerData>
                     <ul className="gameboard__list">
                         {moles.map((mole: MoleType) => (
                             <li key={mole.id}>
