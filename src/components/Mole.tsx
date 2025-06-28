@@ -2,18 +2,23 @@ import type {MoleType} from "../types/Mole.ts";
 import styled from "styled-components";
 import {CSSTransition} from "react-transition-group";
 import {memo, useRef} from "react";
+import {useSelector} from "react-redux";
 
-export const Mole = memo(function Mole({mole, onMoleClick, scoreUpdate}: {
+export const Mole = memo(function Mole({mole, onMoleClick}: {
     mole: MoleType,
-    onMoleClick: (mole: MoleType) => void,
-    scoreUpdate: number
+    onMoleClick: (mole: MoleType) => void
 }) {
     const scoreUpRef = useRef<HTMLDivElement>(null);
+    const game = useSelector((state) => state.game);
+    const audio = new Audio('WAM_touched.wav');
 
     return (
         <StyledMole>
             {!mole.isHidden && !mole.isTouched &&
-                <img src='/WAM_Mole.png' alt='Mole' onClick={() => onMoleClick(mole)}/>}
+                <img src='/WAM_Mole.png' alt='Mole' onClick={() => {
+                    audio.play();
+                    onMoleClick(mole)
+                }}/>}
 
             {!mole.isHidden && mole.isTouched &&
                 <img src='/WAM_Mole_touched.png' alt='Hole'/>}
@@ -23,7 +28,7 @@ export const Mole = memo(function Mole({mole, onMoleClick, scoreUpdate}: {
 
             <CSSTransition className="scoreUp" in={mole.isTouched} unmountOnExit nodeRef={scoreUpRef} timeout={0}
                            classNames="scoreUp">
-                <span ref={scoreUpRef}>+ {scoreUpdate}</span>
+                <span ref={scoreUpRef}>+ {game.scoreUpdate}</span>
             </CSSTransition>
 
         </StyledMole>
