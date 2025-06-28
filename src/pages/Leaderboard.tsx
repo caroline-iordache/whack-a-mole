@@ -1,5 +1,5 @@
-import {use, useEffect, useState} from "react";
-import type {User} from "../types/User.ts";
+import {useEffect, useState} from "react";
+import type {UserType} from "../types/User.ts";
 import styled from "styled-components";
 import {Button} from "../components/Button.tsx";
 import {gameActions} from "../stores/game.ts";
@@ -10,8 +10,8 @@ import {userActions} from "../stores/user.ts";
 export function Leaderboard() {
     const SCORE_DISPLAY_LIMIT = 10;
     const dispatch = useDispatch()
-    const [users, setUsers] = useState<User[]>([]);
-    const [error, setError] = useState<string | null>(null);
+    const [users, setUsers] = useState<UserType[]>([]);
+    const [error, setError] = useState<string>();
 
     useEffect(() => {
         async function getGameData() {
@@ -25,15 +25,19 @@ export function Leaderboard() {
                     return;
                 }
                 const usersFetched = await response?.json();
-                const userMapped = Object.entries(usersFetched).map(([id, user]) => ({
+                const userMapped = Object.entries(usersFetched).map(([id, user]: [string, UserType]) => ({
                     id,
                     ...user,
                 }));
-                const userSorted = userMapped.sort((a: User, b: User) => a.score - b.score).reverse().slice(0, SCORE_DISPLAY_LIMIT);
+                const userSorted = userMapped.sort((a: UserType, b: UserType) => a.score - b.score).reverse().slice(0, SCORE_DISPLAY_LIMIT);
                 setUsers(userSorted);
 
-            } catch (error) {
-                console.error(error);
+            } catch (error: unknown) {
+                if (error instanceof Error) {
+                    setError(error.message);
+                } else {
+                    setError('Unknown error');
+                }
             }
         }
 
@@ -47,16 +51,20 @@ export function Leaderboard() {
 
     return (
         <StyledLeaderboard className="leaderboard">
-            <h1>{SCORE_DISPLAY_LIMIT} Highest scores</h1>
-            <ol className='leaderboard__list'>
-                {users.map((user: User) => (
-                    <li className='leaderboard__items' key={user.id}>
-                        <span>{user.username}</span>
-                        <span>{user.score}</span>
-                    </li>
-                ))}
-            </ol>
-
+            {error && <p>An error has occurred, we cannot get the users highest scores </p>}
+            {!error &&
+                <>
+                    <h1>{SCORE_DISPLAY_LIMIT} Highest scores</h1>
+                    <ol className='leaderboard__list'>
+                        {users.map((user: UserType) => (
+                            <li className='leaderboard__items' key={user.id}>
+                                <span>{user.username}</span>
+                                <span>{user.score}</span>
+                            </li>
+                        ))}
+                    </ol>
+                </>
+            }
             <Button onClick={retry}>Retry</Button>
         </StyledLeaderboard>
     )

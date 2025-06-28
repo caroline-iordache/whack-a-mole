@@ -46,8 +46,12 @@ export function GameSetter() {
                         dispatch(gameActions.updateGameStatus('end'));
                     }, TIMES_UP_DELAY_MS)
                 }
-            } catch (error) {
-                console.error(error);
+            } catch (error: unknown) {
+                if (error instanceof Error) {
+                    setError(error.message);
+                } else {
+                    setError('Unknown error');
+                }
             }
         }
 
@@ -58,7 +62,8 @@ export function GameSetter() {
 
     return (
         <StyledGameContainer delay={TIMES_UP_DELAY_MS}>
-            <div className="game_container">
+            {error && <p className="error">An error has occured. Sorry for the inconvenience : {error} </p>}
+            {!error && <div className="game_container">
                 {game.status === 'idle' && <GameIntroduction updateGameState={updateGameState}></GameIntroduction>}
                 {game.status === 'playing' && <Gameboard></Gameboard>}
                 {game.status === 'end' && <Leaderboard></Leaderboard>}
@@ -67,7 +72,7 @@ export function GameSetter() {
                     <p ref={timesUpRef}>Times up</p>
                 </CSSTransition>
 
-            </div>
+            </div>}
         </StyledGameContainer>
     )
 }
@@ -78,6 +83,16 @@ const StyledGameContainer = styled.section<{ delay: number }>`
     justify-content: center;
     align-items: center;
 
+    .error {
+        font-size: 20px;
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        align-self: center;
+        justify-content: center;
+    }
+
     .game_container {
         display: flex;
         justify-content: center;
@@ -85,7 +100,7 @@ const StyledGameContainer = styled.section<{ delay: number }>`
         max-width: 1500px;
         align-items: center;
     }
-    
+
     .timesUp-enter-done {
         position: fixed;
         font-size: 300px;
