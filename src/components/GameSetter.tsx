@@ -1,23 +1,23 @@
-import {Gameboard} from "./Gameboard.tsx";
-import {GameIntroduction} from "./GameIntroduction.tsx";
-import {Leaderboard} from "./Leaderboard.tsx";
-import {useEffect, useState} from "react";
+import {Gameboard} from "../pages/Gameboard.tsx";
+import {GameIntroduction} from "../pages/GameIntroduction.tsx";
+import {Leaderboard} from "../pages/Leaderboard.tsx";
+import {useState} from "react";
 import type {GameStatus} from "../types/GameStatus.ts";
 import styled from "styled-components";
 import {useDispatch, useSelector} from "react-redux";
-import {userActions} from "../stores/user.ts";
 import {useHammerCursor} from "../hooks/useHammerCursor.tsx";
+import {gameActions} from "../stores/game.ts";
 
 
 export function GameSetter() {
     const dispatch = useDispatch()
-    const [gameState, setGameState] = useState<GameStatus>('idle');
     const [error, setError] = useState<string | null>(null);
+    const game = useSelector((state) => state.game);
     const user = useSelector((state) => state.user);
     useHammerCursor()
 
     function updateGameState(gameState: GameStatus) {
-        setGameState(gameState);
+        dispatch(gameActions.updateGameStatus(gameState));
     }
 
     async function endGame() {
@@ -35,7 +35,7 @@ export function GameSetter() {
             if (!response.ok) {
                 setError(response.statusText);
             } else {
-                setGameState('end');
+                dispatch(gameActions.updateGameStatus('end'));
             }
         } catch (error) {
             console.error(error);
@@ -46,9 +46,9 @@ export function GameSetter() {
     return (
         <StyledGameContainer>
             <div className="game_container">
-                {gameState === 'idle' && <GameIntroduction updateGameState={updateGameState}></GameIntroduction>}
-                {gameState === 'playing' && <Gameboard updateGameState={endGame}></Gameboard>}
-                {gameState === 'end' && <Leaderboard></Leaderboard>}
+                {game.status === 'idle' && <GameIntroduction updateGameState={updateGameState}></GameIntroduction>}
+                {game.status === 'playing' && <Gameboard updateGameState={endGame}></Gameboard>}
+                {game.status === 'end' && <Leaderboard></Leaderboard>}
             </div>
         </StyledGameContainer>
     )

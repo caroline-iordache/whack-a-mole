@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import {useEffect, useState} from "react";
 import type {MoleType} from "../types/Mole.ts";
-import {PlayerData} from "./PlayerData.tsx";
-import {Mole} from "./Mole.tsx";
-import {Timer} from "./Timer.tsx";
+import {PlayerData} from "../components/PlayerData.tsx";
+import {Mole} from "../components/Mole.tsx";
+import {Timer} from "../components/Timer.tsx";
 import type {GameStatus} from "../types/GameStatus.ts";
 import {userActions} from "../stores/user.ts";
 import {useDispatch, useSelector} from "react-redux";

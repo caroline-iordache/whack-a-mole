@@ -5,12 +5,15 @@ export function Timer({updateGameState}: { updateGameState: (status: GameStatus)
     /**
      * Set timerState in second
      */
-    const [timer, setTimer] = useState<number>(20);
+    const [timer, setTimer] = useState<number>(2);
 
     useEffect(() => {
         if (timer === 0) {
-            //updateGameState('end');
+            setTimeout(() => {
+                updateGameState('end');
+            }, 5000)
         }
+
     }, [timer, updateGameState]);
 
     function getTimerInMinutes() {
@@ -38,6 +41,7 @@ export function Timer({updateGameState}: { updateGameState: (status: GameStatus)
     return (
         <div className="timer">
             <p>{getTimerInMinutes()}</p>
+            {timer === 0 && <p> Time's up</p>}
         </div>
     )
 }

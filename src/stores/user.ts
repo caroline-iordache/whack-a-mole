@@ -9,6 +9,10 @@ const userSlice = createSlice({
         score: 0
     },
     reducers: {
+        resetStatus: (state) => {
+            state.username = '';
+            state.score = 0;
+        },
         setUsername: (state, action: { payload: string }) => {
             state.username = action.payload
         },

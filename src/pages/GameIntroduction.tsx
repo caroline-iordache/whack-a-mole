@@ -3,6 +3,7 @@ import styled from "styled-components";
 import {type FormEvent, useRef} from "react";
 import {useDispatch} from "react-redux";
 import {userActions} from "../stores/user.ts";
+import {Button} from "../components/Button.tsx";
 
 export function GameIntroduction({updateGameState}: { updateGameState: (status: GameStatus) => void }) {
     const dispatch = useDispatch()
@@ -27,7 +28,7 @@ export function GameIntroduction({updateGameState}: { updateGameState: (status: 
                 <form className='game-introduction__form' onSubmit={onStart}>
                     <label htmlFor="player-name">Please enter your name</label>
                     <input id="player-name" className="game-introduction__input" ref={playerName} type="text" required></input>
-                    <button className="game-introduction__button">Play</button>
+                    <Button>Play</Button>
                 </form>
             </div>
         </StyledGameIntroduction>
@@ -60,22 +61,6 @@ const StyledGameIntroduction = styled.section`
         font-size: 18px;
         font-family: inherit;
 
-    }
-
-    .game-introduction__button {
-        width: 100%;
-        background: linear-gradient(to bottom, var(--primary-color) 5%, var(--secondary-color) 100%);
-        border-radius: 3px;
-        border: 1px solid var(--secondary-color);
-        cursor: pointer;
-        color: var(--black);
-        font-size: 17px;
-        padding: 11px 47px;
-        font-family: inherit;
-
-        &:hover {
-            background: linear-gradient(to bottom, var(--secondary-color) 5%, var(--primary-color) 100%);
-        }
     }
 
     .game-introduction__form {
