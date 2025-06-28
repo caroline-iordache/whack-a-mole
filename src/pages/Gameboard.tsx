@@ -4,11 +4,10 @@ import type {MoleType} from "../types/Mole.ts";
 import {PlayerData} from "../components/PlayerData.tsx";
 import {Mole} from "../components/Mole.tsx";
 import {Timer} from "../components/Timer.tsx";
-import type {GameStatus} from "../types/GameStatus.ts";
 import {userActions} from "../stores/user.ts";
 import {useDispatch, useSelector} from "react-redux";
 
-export function Gameboard({updateGameState}: { updateGameState: (status: GameStatus) => void }) {
+export function Gameboard() {
     const dispatch = useDispatch()
     const user = useSelector((state) => state.user);
 
@@ -90,7 +89,7 @@ export function Gameboard({updateGameState}: { updateGameState: (status: GameSta
         <StyledGameboard>
             <div className="gameboard">
                 <div className="gameboard__container">
-                    <PlayerData score={user.score}> <Timer updateGameState={updateGameState}></Timer></PlayerData>
+                    <PlayerData score={user.score}> <Timer></Timer></PlayerData>
                     <ul className="gameboard__list">
                         {moles.map((mole: MoleType) => (
                             <li key={mole.id}>

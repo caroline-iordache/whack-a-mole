@@ -1,20 +1,10 @@
-import {useEffect, useState} from "react";
-import type {GameStatus} from "../types/GameStatus.ts";
+import {useEffect} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {timerActions} from "../stores/timer.ts";
 
-export function Timer({updateGameState}: { updateGameState: (status: GameStatus) => void }) {
-    /**
-     * Set timerState in second
-     */
-    const [timer, setTimer] = useState<number>(2);
-
-    useEffect(() => {
-        if (timer === 0) {
-            setTimeout(() => {
-                updateGameState('end');
-            }, 5000)
-        }
-
-    }, [timer, updateGameState]);
+export function Timer() {
+    const timer = useSelector((state) => state.timer);
+    const dispatch = useDispatch()
 
     function getTimerInMinutes() {
         const minutes = Math.floor(timer / 60);
@@ -25,23 +15,16 @@ export function Timer({updateGameState}: { updateGameState: (status: GameStatus)
     }
 
     useEffect(() => {
-
         const timerIntervalId = setInterval(() => {
-            setTimer(prevTiming => {
-                if (prevTiming > 0) {
-                    return prevTiming - 1
-                }
-                return prevTiming;
-            })
+            dispatch(timerActions.updateTimer());
         }, 1000)
 
         return () => clearInterval(timerIntervalId);
-    }, []);
+    }, [dispatch]);
 
     return (
         <div className="timer">
             <p>{getTimerInMinutes()}</p>
-            {timer === 0 && <p> Time's up</p>}
         </div>
     )
 }
