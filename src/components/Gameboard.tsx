@@ -107,7 +107,6 @@ export function Gameboard({updateGameState}: { updateGameState: (status: GameSta
 
 const StyledGameboard = styled.div`
     .gameboard {
-
         &__list {
             list-style: none;
             display: grid;

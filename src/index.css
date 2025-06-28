@@ -1,3 +1,4 @@
+
 body {
     display: flex;
     justify-content: center;
@@ -5,6 +6,7 @@ body {
     width: 100vw;
     background-image: url("WAM_bg.jpg");
     background-size: 100% 100%;
+    color: var(--black);
 
     .gameboard {
         cursor: url("/WAM_Hammer.png") 45 60, auto;
