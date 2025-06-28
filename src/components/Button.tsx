@@ -12,7 +12,7 @@ export function Button({children, onClick}: { children: ReactNode, onClick: () =
 
 const StyledButton = styled.button`
     width: 100%;
-    background: linear-gradient(to bottom, var(--primary-color) 5%, var(--secondary-color) 100%);
+    background: var(--gradient);
     border-radius: 3px;
     border: 1px solid var(--secondary-color);
     cursor: pointer;
@@ -22,6 +22,6 @@ const StyledButton = styled.button`
     font-family: inherit;
 
     &:hover {
-        background: linear-gradient(to bottom, var(--secondary-color) 5%, var(--primary-color) 100%);
+        background: var(--gradient-reverse)
     }
 `

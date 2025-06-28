@@ -10,10 +10,11 @@ import {useDispatch, useSelector} from "react-redux";
 export function Gameboard() {
     const dispatch = useDispatch()
     const user = useSelector((state) => state.user);
+    const timer = useSelector((state) => state.timer);
 
     const MOLES_NUMBER = 12;
     const SCORE_INCREMENTATION = 100;
-    const MOLE_VISIBILITY_MS = 1000;
+    const MOLE_VISIBILITY_MS = 3000;
     const MOLE_DISPLAY_INTERVAL_MS = 3000;
 
     const [moles, setMoles] = useState<MoleType[]>(() =>
@@ -24,9 +25,24 @@ export function Gameboard() {
         }))
     );
 
-    function onMoleClick(moleId: string) {
-        whackMole(moleId);
-        updateScore()
+    /**
+     * When a mole is clicked:
+     * - Whack the mole
+     * - update the score
+     * - Change manually the visibility to show the score update
+     * @param mole the whacked mole
+     */
+    function onMoleClick(mole: MoleType): void {
+        if (!mole.isTouched && timer !== 0) {
+            whackMole(mole.id);
+            updateScore();
+            setTimeout(() => {
+                setMoles(prevMoles => prevMoles.map((mole: MoleType) => {
+                    return {...mole, isHidden: true, isTouched: false};
+                }));
+            }, 2000)
+        }
+
     }
 
     /**
@@ -54,12 +70,12 @@ export function Gameboard() {
         /**
          * Toggle the mole visibility by changing its isHidden property
          * @param moleIndex The index of the mole to display
-         * @param isHidden Whether the mole should be hidden or not
+         * @param hideMole Whether the mole should be hidden or not
          */
-        function toggleMoleVisibility(moleIndex: number, isHidden: boolean): void {
+        function toggleMoleVisibility(moleIndex: number, hideMole: boolean): void {
             setMoles(prevMoles => prevMoles.map((mole: MoleType, index: number) => {
-                if (moleIndex === index) {
-                    return {...mole, isHidden, isTouched: false};
+                if (moleIndex === index && !mole.isTouched) {
+                    return {...mole, isHidden: hideMole};
                 }
                 return {...mole};
             }));
@@ -73,6 +89,7 @@ export function Gameboard() {
             const visibilityIntervalId = setInterval(() => {
                 const moleToShowIndex = Math.floor(Math.random() * MOLES_NUMBER);
                 toggleMoleVisibility(moleToShowIndex, false)
+
 
                 setTimeout(() => {
                     toggleMoleVisibility(moleToShowIndex, true)

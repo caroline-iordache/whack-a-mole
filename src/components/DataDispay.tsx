@@ -22,7 +22,7 @@ const StyledDataDisplay = styled.div`
     border-radius: 5px;
 
     .data__icon-container {
-        background: linear-gradient(to bottom, var(--primary-color) 5%, var(--secondary-color) 100%);
+        background: var(--gradient);
         height: inherit;
         padding-inline: 15px;
         font-family: 'icomoon';

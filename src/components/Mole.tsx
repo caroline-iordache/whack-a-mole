@@ -1,18 +1,29 @@
 import type {MoleType} from "../types/Mole.ts";
 import styled from "styled-components";
+import {CSSTransition} from "react-transition-group";
+import {useRef, useState} from "react";
 
 export function Mole({mole, onMoleClick, scoreUpdate}: {
     mole: MoleType,
-    onMoleClick: (moleId: string) => void,
+    onMoleClick: (mole: MoleType) => void,
     scoreUpdate: number
 }) {
+    const scoreUpRef = useRef<HTMLDivElement>(null);
+
     return (
         <StyledMole>
-            {!mole.isHidden &&
-                <img src='/WAM_Mole.png' alt='Mole' onClick={() => onMoleClick(mole.id)}/>}
-            {mole.isHidden && <img src='/WAM_Hole.png' alt='Hole'/>}
+            {!mole.isHidden && ! mole.isTouched &&
+                <img src='/WAM_Mole.png' alt='Mole' onClick={() => onMoleClick(mole)}/>}
 
-            {mole.isTouched && <span className='scoreUpdate'>+ {scoreUpdate}</span>}
+            {!mole.isHidden && mole.isTouched &&
+                <img src='/WAM_Mole_touched.png' alt='Hole'/>}
+
+            {mole.isHidden &&
+                <img src='/WAM_Hole.png' alt='Hole'/>}
+
+            <CSSTransition className="scoreUp" in={mole.isTouched} unmountOnExit nodeRef={scoreUpRef} timeout={0} classNames="scoreUp">
+                <span ref={scoreUpRef}>+ {scoreUpdate}</span>
+            </CSSTransition>
 
         </StyledMole>
     )
@@ -21,14 +32,22 @@ export function Mole({mole, onMoleClick, scoreUpdate}: {
 const StyledMole = styled.div`
     position: relative;
 
-    .scoreUpdate {
+    .scoreUp {
         padding: 10px;
-        background-color: #8E6C60;
+        background: var(--gradient);
         position: absolute;
         left: 50%;
         bottom: 0;
         transform: translateX(-50%);
-        font-size: 30px;
-        color: white;
+        color: var(--black);
+        transition: font-size 100ms;
+        font-family: "Comic Relief", system-ui;
+        display: flex;
+        border-radius: 5px;
     }
+    
+    .scoreUp-enter-done {
+        font-size: 30px;
+    }
+
 `

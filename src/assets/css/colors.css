@@ -3,4 +3,6 @@
     --secondary-color: #ffaa22;
     --white: #FFF8F0;
     --black: #1E1E24;
+    --gradient: linear-gradient(to bottom, var(--primary-color) 5%, var(--secondary-color) 100%);
+    --gradient-reverse:  linear-gradient(to bottom, var(--secondary-color) 5%, var(--primary-color) 100%);
 }

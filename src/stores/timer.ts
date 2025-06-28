@@ -3,12 +3,13 @@ import type {GameStatus} from "../types/GameStatus.ts";
 
 const timerSlice = createSlice({
     name: 'timer',
-    initialState: 5,
+    initialState: 120,
     reducers: {
         updateTimer: (state: number) => {
             if (state > 0) {
                 return state - 1
             }
+            return 0;
         }
     }
 })
