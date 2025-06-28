@@ -10,11 +10,11 @@ const usersSlice = createSlice({
     },
     reducers: {
         setUsers: (state, action: { payload: UserType[] }) => {
-            state.users = action.payload;
+            state.users = action.payload.sort((a: UserType, b: UserType) => a.score - b.score).reverse().slice(0, usersSlice.getInitialState().limit);
             state.errors = '';
         },
         updateUsers: (state, action: { payload: UserType }) => {
-            state.users = [...state.users, action.payload];
+            state.users = [...state.users, action.payload].sort((a: UserType, b: UserType) => a.score - b.score).reverse().slice(0, usersSlice.getInitialState().limit);
             state.errors = '';
         },
         setErrors: (state, action: { payload: string }) => {

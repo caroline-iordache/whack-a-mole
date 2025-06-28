@@ -11,13 +11,14 @@ import {CSSTransition} from 'react-transition-group';
 import type {RootState} from "../stores";
 import {usersActions} from "../stores/users.ts";
 import type {UserType} from "../types/User.ts";
+import {fetchUsers} from "../api/fetchUsers.tsx";
+import {patchUsers} from "../api/patchUsers.tsx";
 
 export function GameSetter() {
     const dispatch = useDispatch()
     const [error, setError] = useState<string | null>(null);
     const game = useSelector((state: RootState) => state.game);
     const user = useSelector((state: RootState) => state.user);
-    const users = useSelector((state:RootState) => state.users);
     const timer = useSelector((state: RootState) => state.timer);
     const timesUpRef = useRef(null)
     const [showTimesUp, setShowTimesUp] = useState(false);
@@ -29,33 +30,12 @@ export function GameSetter() {
     }
 
     useEffect(() => {
-        async function getUsers() {
-            try {
-                const response = await fetch("https://whakeamole-default-rtdb.europe-west1.firebasedatabase.app/users.json", {
-                    headers: {'Content-Type': 'application/json'},
-                });
-
-                if (!response.ok) {
-                    setError(response.statusText);
-                    return;
-                }
-                const usersFetched: Record<string, UserType> = await response?.json();
-                const userMapped: UserType[] = Object.entries(usersFetched).map(([, user]: [string, UserType]) => ({
-                    ...user,
-                }));
-                const userSorted = userMapped.sort((a: UserType, b: UserType) => a.score - b.score).reverse().slice(0, users.limit);
-                dispatch(usersActions.setUsers(userSorted));
-            } catch (error: unknown) {
-                if (error instanceof Error) {
-                    dispatch(usersActions.setErrors(error.message));
-                } else {
-                    dispatch(usersActions.setErrors('Unknown error'));
-                }
-            }
-        }
-
-        getUsers().then()
-    }, [dispatch, users]);
+        fetchUsers().then((users: UserType[]) => {
+            dispatch(usersActions.setUsers(users));
+        }).catch((error: string) => {
+            dispatch(usersActions.setErrors(error));
+        });
+    }, [dispatch]);
 
     useEffect(() => {
         async function endGame() {
@@ -65,34 +45,16 @@ export function GameSetter() {
                 score: user.score
             };
 
-            try {
-                const url = `https://whakeamole-default-rtdb.europe-west1.firebasedatabase.app/users/${user.id}.json`
-                const response = await fetch(url, {
-                    method: "PATCH",
-                    body: JSON.stringify({
-                        username: currentUser.username,
-                        score: currentUser.score
-                    }),
-                    headers: {'Content-Type': 'application/json'},
-                })
-
-                if (!response.ok) {
-                    setError(response.statusText);
-                } else {
-                    setShowTimesUp(true);
-                    dispatch(usersActions.updateUsers(currentUser));
-                    setTimeout(() => {
-                        setShowTimesUp(false);
-                        dispatch(gameActions.updateGameStatus('end'));
-                    }, TIMES_UP_DELAY_MS)
-                }
-            } catch (error: unknown) {
-                if (error instanceof Error) {
-                    setError(error.message);
-                } else {
-                    setError('Unknown error');
-                }
-            }
+            patchUsers(currentUser).then(() => {
+                setShowTimesUp(true);
+                dispatch(usersActions.updateUsers(currentUser));
+                setTimeout(() => {
+                    setShowTimesUp(false);
+                    dispatch(gameActions.updateGameStatus('end'));
+                }, TIMES_UP_DELAY_MS)
+            }).catch((error: string) => {
+                setError(error);
+            })
         }
 
         if (timer === 0) {
