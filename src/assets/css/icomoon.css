@@ -1,0 +1,21 @@
+@font-face {
+  font-family: 'icomoon';
+  src:  url('../fonts/icomoon.eot?xgws9t');
+  src:  url('../fonts/icomoon.eot?xgws9t#iefix') format('embedded-opentype'),
+    url('../fonts/icomoon.ttf?xgws9t') format('truetype'),
+    url('../fonts/icomoon.woff?xgws9t') format('woff'),
+    url('../fonts/icomoon.svg?xgws9t#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+.icon-dice:before {
+  content: "\e915";
+}
+.icon-clock2:before {
+  content: "\e94f";
+}
+.icon-cool2:before {
+  content: "\e9ec";
+}

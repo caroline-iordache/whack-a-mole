@@ -90,8 +90,7 @@ export function Gameboard({updateGameState}: { updateGameState: (status: GameSta
         <StyledGameboard>
             <div className="gameboard">
                 <div className="gameboard__container">
-                    <PlayerData score={user.score}></PlayerData>
-                    <Timer updateGameState={updateGameState}></Timer>
+                    <PlayerData score={user.score}> <Timer updateGameState={updateGameState}></Timer></PlayerData>
                     <ul className="gameboard__list">
                         {moles.map((mole: MoleType) => (
                             <li key={mole.id}>

@@ -1,7 +1,8 @@
 import {StrictMode} from 'react'
 import {createRoot} from 'react-dom/client'
 import './index.css'
-import './assets/colors.css'
+import './assets/css/colors.css'
+import './assets/css/icomoon.css'
 import {GameSetter} from "./components/GameSetter.tsx";
 import {Provider} from "react-redux";
 import store from "./stores";

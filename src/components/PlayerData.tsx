@@ -1,10 +1,23 @@
 import styled from "styled-components";
+import {useSelector} from "react-redux";
+import {DataDisplay} from "./DataDispay.tsx";
 
-export function PlayerData({score}: { score: number }) {
+export function PlayerData({score, children}: { score: number, children: any }) {
+    const user = useSelector((state) => state.user);
+
     return (
         <StyledPlayerData>
-            <p className="playerName">playerName</p>
-            <p className="score">Score: {score}</p>
+            <DataDisplay iconName={'icon-cool2'}>
+                {user.username}
+            </DataDisplay>
+
+            <DataDisplay iconName={'icon-dice'}>
+                <span className="data__info">{score}</span>
+            </DataDisplay>
+
+            <DataDisplay iconName={'icon-clock2'}>
+                <span className="data__info"> {children}</span>
+            </DataDisplay>
         </StyledPlayerData>
     )
 }
@@ -14,17 +27,6 @@ const StyledPlayerData = styled.div`
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    font-size: 2em;
-    
-    .score {
-        background-color: red;
-        padding: 20px;
-        border-radius: 5px;
-        align-self: end;
-    }
-    
-    .playerName {
-        color: white;
-        
-    }
+    margin-top: 50px;
+    margin-bottom: 50px;
 `;

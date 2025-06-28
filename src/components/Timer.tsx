@@ -9,15 +9,16 @@ export function Timer({updateGameState}: { updateGameState: (status: GameStatus)
 
     useEffect(() => {
         if (timer === 0) {
-            updateGameState('end');
+            //updateGameState('end');
         }
     }, [timer, updateGameState]);
 
     function getTimerInMinutes() {
         const minutes = Math.floor(timer / 60);
         const seconds = timer - minutes * 60;
+        const secondWith0 = (seconds < 10 ? '0' : '') + seconds;
 
-        return `${minutes} : ${seconds}`
+        return `${minutes} : ${secondWith0}`
     }
 
     useEffect(() => {

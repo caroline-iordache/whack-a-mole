@@ -58,7 +58,7 @@ const StyledGameIntroduction = styled.section`
         margin-bottom: 10px;
         padding: 10px;
         font-size: 18px;
-        font-family: 'Comic Relief', sans-serif;
+        font-family: inherit;
 
     }
 
@@ -71,7 +71,7 @@ const StyledGameIntroduction = styled.section`
         color: var(--black);
         font-size: 17px;
         padding: 11px 47px;
-        font-family: 'Comic Relief', sans-serif;
+        font-family: inherit;
 
         &:hover {
             background: linear-gradient(to bottom, var(--secondary-color) 5%, var(--primary-color) 100%);

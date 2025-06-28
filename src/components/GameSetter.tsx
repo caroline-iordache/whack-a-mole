@@ -16,10 +16,6 @@ export function GameSetter() {
     const user = useSelector((state) => state.user);
     useHammerCursor()
 
-    useEffect(() => {
-        dispatch(userActions.getUser({}));
-    }, [dispatch])
-
     function updateGameState(gameState: GameStatus) {
         setGameState(gameState);
     }

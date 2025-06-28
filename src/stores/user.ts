@@ -9,9 +9,6 @@ const userSlice = createSlice({
         score: 0
     },
     reducers: {
-        getUser: (state: { user: UserType }, action: { payload: UserType }) => {
-            state.user = action.payload
-        },
         setUsername: (state, action: { payload: string }) => {
             state.username = action.payload
         },
