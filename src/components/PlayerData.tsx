@@ -2,10 +2,11 @@ import styled from "styled-components";
 import {useSelector} from "react-redux";
 import {DataDisplay} from "./DataDispay.tsx";
 import type {ReactNode} from "react";
+import type {RootState} from "../stores";
 
 
 export function PlayerData({children}: { children: ReactNode }) {
-    const user = useSelector((state) => state.user);
+    const user = useSelector((state:RootState) => state.user);
 
     return (
         <StyledPlayerData>

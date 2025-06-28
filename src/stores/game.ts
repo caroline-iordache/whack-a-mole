@@ -4,7 +4,8 @@ import type {GameStatus} from "../types/GameStatus.ts";
 const gameSlice = createSlice({
     name: 'game',
     initialState: {
-        status: 'idle'
+        status: 'idle',
+        scoreUpdate: 100
     },
     reducers: {
         updateGameStatus: (state, action: { payload: GameStatus }) => {

@@ -3,20 +3,21 @@ import styled from "styled-components";
 import {CSSTransition} from "react-transition-group";
 import {memo, useRef} from "react";
 import {useSelector} from "react-redux";
+import type {RootState} from "../stores";
 
 export const Mole = memo(function Mole({mole, onMoleClick}: {
     mole: MoleType,
     onMoleClick: (mole: MoleType) => void
 }) {
     const scoreUpRef = useRef<HTMLDivElement>(null);
-    const game = useSelector((state) => state.game);
-    const audio = new Audio('WAM_touched.wav');
+    const game = useSelector((state: RootState) => state.game);
+    const audio = useRef(new Audio('WAM_touched.wav'));
 
     return (
         <StyledMole>
             {!mole.isHidden && !mole.isTouched &&
                 <img src='/WAM_Mole.png' alt='Mole' onClick={() => {
-                    audio.play();
+                    audio.current?.play();
                     onMoleClick(mole)
                 }}/>}
 

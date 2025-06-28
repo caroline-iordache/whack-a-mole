@@ -1,4 +1,3 @@
-import type {UserType} from "../types/User";
 import {createSlice} from "@reduxjs/toolkit";
 
 const userSlice = createSlice({

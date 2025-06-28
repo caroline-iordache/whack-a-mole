@@ -1,9 +1,10 @@
 import {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {timerActions} from "../stores/timer.ts";
+import type {RootState} from "../stores";
 
 export function Timer() {
-    const timer = useSelector((state) => state.timer);
+    const timer = useSelector((state:RootState) => state.timer);
     const dispatch = useDispatch()
 
     function getTimerInMinutes() {

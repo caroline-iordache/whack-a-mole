@@ -24,9 +24,8 @@ export function Leaderboard() {
                     setError(response.statusText);
                     return;
                 }
-                const usersFetched = await response?.json();
-                const userMapped = Object.entries(usersFetched).map(([id, user]: [string, UserType]) => ({
-                    id,
+                const usersFetched: Record<string, UserType> = await response?.json();
+                const userMapped: UserType[] = Object.entries(usersFetched).map(([,user]: [string, UserType]) => ({
                     ...user,
                 }));
                 const userSorted = userMapped.sort((a: UserType, b: UserType) => a.score - b.score).reverse().slice(0, SCORE_DISPLAY_LIMIT);

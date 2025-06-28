@@ -8,13 +8,14 @@ import {useDispatch, useSelector} from "react-redux";
 import {useHammerCursor} from "../hooks/useHammerCursor.tsx";
 import {gameActions} from "../stores/game.ts";
 import {CSSTransition} from 'react-transition-group';
+import type {RootState} from "../stores";
 
 export function GameSetter() {
     const dispatch = useDispatch()
     const [error, setError] = useState<string | null>(null);
-    const game = useSelector((state) => state.game);
-    const user = useSelector((state) => state.user);
-    const timer = useSelector((state) => state.timer);
+    const game = useSelector((state:RootState) => state.game);
+    const user = useSelector((state:RootState) => state.user);
+    const timer = useSelector((state:RootState) => state.timer);
     const timesUpRef = useRef(null)
     const [showTimesUp, setShowTimesUp] = useState(false);
     const TIMES_UP_DELAY_MS = 2000;

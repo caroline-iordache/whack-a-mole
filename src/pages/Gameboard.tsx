@@ -6,15 +6,15 @@ import {Mole} from "../components/Mole.tsx";
 import {Timer} from "../components/Timer.tsx";
 import {userActions} from "../stores/user.ts";
 import {useDispatch, useSelector} from "react-redux";
+import type {RootState} from "../stores";
 
 export function Gameboard() {
     const dispatch = useDispatch()
-    const user = useSelector((state) => state.user);
-    const timer = useSelector((state) => state.timer);
+    const timer = useSelector((state:RootState) => state.timer);
+    const game = useSelector((state:RootState) => state.game);
 
     const MOLES_NUMBER = 12;
-    const SCORE_INCREMENTATION = 100;
-    const MOLE_VISIBILITY_MS = 900;
+    const MOLE_VISIBILITY_MS = 1200;
     const MOLE_DISPLAY_INTERVAL_MS = 1000;
 
     const [moles, setMoles] = useState<MoleType[]>(() =>
@@ -43,8 +43,8 @@ export function Gameboard() {
      * Update the score to SCORE_INCREMENTATION value
      */
     const updateScore = useCallback(() => {
-        dispatch(userActions.updateUserScore(SCORE_INCREMENTATION));
-    }, [dispatch])
+        dispatch(userActions.updateUserScore(game.scoreUpdate));
+    }, [dispatch, game])
 
     /**
      * When a mole is clicked:
@@ -109,7 +109,7 @@ export function Gameboard() {
                     <ul className="gameboard__list">
                         {moles.map((mole: MoleType) => (
                             <li key={mole.id}>
-                                <Mole mole={mole} onMoleClick={onMoleClick} scoreUpdate={SCORE_INCREMENTATION}></Mole>
+                                <Mole mole={mole} onMoleClick={onMoleClick}></Mole>
                             </li>
                         ))}
                     </ul>
