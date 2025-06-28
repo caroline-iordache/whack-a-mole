@@ -9,13 +9,16 @@ import {useHammerCursor} from "../hooks/useHammerCursor.tsx";
 import {gameActions} from "../stores/game.ts";
 import {CSSTransition} from 'react-transition-group';
 import type {RootState} from "../stores";
+import {usersActions} from "../stores/users.ts";
+import type {UserType} from "../types/User.ts";
 
 export function GameSetter() {
     const dispatch = useDispatch()
     const [error, setError] = useState<string | null>(null);
-    const game = useSelector((state:RootState) => state.game);
-    const user = useSelector((state:RootState) => state.user);
-    const timer = useSelector((state:RootState) => state.timer);
+    const game = useSelector((state: RootState) => state.game);
+    const user = useSelector((state: RootState) => state.user);
+    const users = useSelector((state:RootState) => state.users);
+    const timer = useSelector((state: RootState) => state.timer);
     const timesUpRef = useRef(null)
     const [showTimesUp, setShowTimesUp] = useState(false);
     const TIMES_UP_DELAY_MS = 2000;
@@ -26,14 +29,49 @@ export function GameSetter() {
     }
 
     useEffect(() => {
+        async function getUsers() {
+            try {
+                const response = await fetch("https://whakeamole-default-rtdb.europe-west1.firebasedatabase.app/users.json", {
+                    headers: {'Content-Type': 'application/json'},
+                });
+
+                if (!response.ok) {
+                    setError(response.statusText);
+                    return;
+                }
+                const usersFetched: Record<string, UserType> = await response?.json();
+                const userMapped: UserType[] = Object.entries(usersFetched).map(([, user]: [string, UserType]) => ({
+                    ...user,
+                }));
+                const userSorted = userMapped.sort((a: UserType, b: UserType) => a.score - b.score).reverse().slice(0, users.limit);
+                dispatch(usersActions.setUsers(userSorted));
+            } catch (error: unknown) {
+                if (error instanceof Error) {
+                    dispatch(usersActions.setErrors(error.message));
+                } else {
+                    dispatch(usersActions.setErrors('Unknown error'));
+                }
+            }
+        }
+
+        getUsers().then()
+    }, [dispatch, users]);
+
+    useEffect(() => {
         async function endGame() {
+            const currentUser: UserType = {
+                id: user.id,
+                username: user.username,
+                score: user.score
+            };
+
             try {
                 const url = `https://whakeamole-default-rtdb.europe-west1.firebasedatabase.app/users/${user.id}.json`
                 const response = await fetch(url, {
                     method: "PATCH",
                     body: JSON.stringify({
-                        username: user.username,
-                        score: user.score
+                        username: currentUser.username,
+                        score: currentUser.score
                     }),
                     headers: {'Content-Type': 'application/json'},
                 })
@@ -42,6 +80,7 @@ export function GameSetter() {
                     setError(response.statusText);
                 } else {
                     setShowTimesUp(true);
+                    dispatch(usersActions.updateUsers(currentUser));
                     setTimeout(() => {
                         setShowTimesUp(false);
                         dispatch(gameActions.updateGameStatus('end'));

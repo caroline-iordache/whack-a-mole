@@ -1,61 +1,31 @@
-import {useEffect, useState} from "react";
 import type {UserType} from "../types/User.ts";
 import styled from "styled-components";
 import {Button} from "../components/Button.tsx";
 import {gameActions} from "../stores/game.ts";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {userActions} from "../stores/user.ts";
+import type {RootState} from "../stores";
+import {timerActions} from "../stores/timer.ts";
 
 
 export function Leaderboard() {
-    const SCORE_DISPLAY_LIMIT = 10;
-    const dispatch = useDispatch()
-    const [users, setUsers] = useState<UserType[]>([]);
-    const [error, setError] = useState<string>();
-
-    useEffect(() => {
-        async function getGameData() {
-            try {
-                const response = await fetch("https://whakeamole-default-rtdb.europe-west1.firebasedatabase.app/users.json", {
-                    headers: {'Content-Type': 'application/json'},
-                });
-
-                if (!response.ok) {
-                    setError(response.statusText);
-                    return;
-                }
-                const usersFetched: Record<string, UserType> = await response?.json();
-                const userMapped: UserType[] = Object.entries(usersFetched).map(([,user]: [string, UserType]) => ({
-                    ...user,
-                }));
-                const userSorted = userMapped.sort((a: UserType, b: UserType) => a.score - b.score).reverse().slice(0, SCORE_DISPLAY_LIMIT);
-                setUsers(userSorted);
-
-            } catch (error: unknown) {
-                if (error instanceof Error) {
-                    setError(error.message);
-                } else {
-                    setError('Unknown error');
-                }
-            }
-        }
-
-        getGameData().then()
-    }, []);
+    const dispatch = useDispatch();
+    const users = useSelector((state:RootState) => state.users);
 
     function retry() {
         dispatch(gameActions.updateGameStatus('idle'));
         dispatch(userActions.resetStatus());
+        dispatch(timerActions.resetTimer());
     }
 
     return (
         <StyledLeaderboard className="leaderboard">
-            {error && <p>An error has occurred, we cannot get the users highest scores </p>}
-            {!error &&
+            {users.errors && <p>An error has occurred, we cannot get the users highest scores </p>}
+            {!users.errors &&
                 <>
-                    <h1>{SCORE_DISPLAY_LIMIT} Highest scores</h1>
+                    <h1>{users.limit && users.limit }Highest scores</h1>
                     <ol className='leaderboard__list'>
-                        {users.map((user: UserType) => (
+                        {users.users.map((user: UserType) => (
                             <li className='leaderboard__items' key={user.id}>
                                 <span>{user.username}</span>
                                 <span>{user.score}</span>
