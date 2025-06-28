@@ -1,13 +1,13 @@
 import {Gameboard} from "../pages/Gameboard.tsx";
 import {GameIntroduction} from "../pages/GameIntroduction.tsx";
 import {Leaderboard} from "../pages/Leaderboard.tsx";
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import type {GameStatus} from "../types/GameStatus.ts";
 import styled from "styled-components";
 import {useDispatch, useSelector} from "react-redux";
 import {useHammerCursor} from "../hooks/useHammerCursor.tsx";
 import {gameActions} from "../stores/game.ts";
-
+import {CSSTransition} from 'react-transition-group';
 
 export function GameSetter() {
     const dispatch = useDispatch()
@@ -15,6 +15,9 @@ export function GameSetter() {
     const game = useSelector((state) => state.game);
     const user = useSelector((state) => state.user);
     const timer = useSelector((state) => state.timer);
+    const timesUpRef = useRef(null)
+    const [showTimesUp, setShowTimesUp] = useState(false);
+    const TIMES_UP_DELAY_MS = 2000;
     useHammerCursor()
 
     function updateGameState(gameState: GameStatus) {
@@ -37,9 +40,11 @@ export function GameSetter() {
                 if (!response.ok) {
                     setError(response.statusText);
                 } else {
+                    setShowTimesUp(true);
                     setTimeout(() => {
+                        setShowTimesUp(false);
                         dispatch(gameActions.updateGameStatus('end'));
-                    }, 5000)
+                    }, TIMES_UP_DELAY_MS)
                 }
             } catch (error) {
                 console.error(error);
@@ -52,18 +57,22 @@ export function GameSetter() {
     }, [dispatch, timer, user]);
 
     return (
-        <StyledGameContainer>
+        <StyledGameContainer delay={TIMES_UP_DELAY_MS}>
             <div className="game_container">
                 {game.status === 'idle' && <GameIntroduction updateGameState={updateGameState}></GameIntroduction>}
                 {game.status === 'playing' && <Gameboard></Gameboard>}
                 {game.status === 'end' && <Leaderboard></Leaderboard>}
+
+                <CSSTransition in={showTimesUp} unmountOnExit nodeRef={timesUpRef} timeout={0} classNames="timesUp">
+                    <p ref={timesUpRef}>Times up</p>
+                </CSSTransition>
+
             </div>
         </StyledGameContainer>
     )
 }
 
-
-const StyledGameContainer = styled.section`
+const StyledGameContainer = styled.section<{ delay: number }>`
     position: relative;
     display: flex;
     justify-content: center;
@@ -75,5 +84,14 @@ const StyledGameContainer = styled.section`
         flex-direction: column;
         max-width: 1500px;
         align-items: center;
+    }
+    
+    .timesUp-enter-done {
+        position: fixed;
+        font-size: 300px;
+        color: white;
+        font-family: "Comic Relief", system-ui;
+        text-shadow: var(--black) 1px 0 10px;
+        transition: font-size ${({delay}) => delay}ms;
     }
 `
