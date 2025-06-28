@@ -5,7 +5,7 @@ export function Timer({updateGameState}: { updateGameState: (status: GameStatus)
     /**
      * Set timerState in second
      */
-    const [timer, setTimer] = useState<number>(3);
+    const [timer, setTimer] = useState<number>(20);
 
     useEffect(() => {
         if (timer === 0) {

@@ -1,14 +1,18 @@
 import type {GameStatus} from "../types/GameStatus.ts";
 import styled from "styled-components";
-import {type RefObject, useRef} from "react";
+import {type RefObject, useEffect, useRef} from "react";
 import {useForm} from "react-hook-form";
+import {useDispatch} from "react-redux";
+import {userActions} from "../stores/user.ts";
 
 export function GameIntroduction({updateGameState}: { updateGameState: (status: GameStatus) => void }) {
+    const dispatch = useDispatch()
     const playerName: RefObject<HTMLInputElement | null> = useRef(null);
     const {handleSubmit} = useForm();
 
     function onStart() {
         if (playerName?.current?.value) {
+            dispatch(userActions.setUsername(playerName?.current?.value))
             updateGameState('playing')
         }
     }

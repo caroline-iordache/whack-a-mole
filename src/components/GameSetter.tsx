@@ -1,15 +1,22 @@
 import {Gameboard} from "./Gameboard.tsx";
 import {GameIntroduction} from "./GameIntroduction.tsx";
 import {Leaderboard} from "./Leaderboard.tsx";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import type {GameStatus} from "../types/GameStatus.ts";
 import styled from "styled-components";
+import {useDispatch, useSelector} from "react-redux";
+import {userActions} from "../stores/user.ts";
 
 
 export function GameSetter() {
-
+    const dispatch = useDispatch()
     const [gameState, setGameState] = useState<GameStatus>('idle');
     const [error, setError] = useState<string | null>(null);
+    const user = useSelector((state) => state.user);
+
+    useEffect(() => {
+        dispatch(userActions.getUser({}));
+    }, [dispatch])
 
     function updateGameState(gameState: GameStatus) {
         setGameState(gameState);
@@ -17,12 +24,6 @@ export function GameSetter() {
 
     async function endGame() {
         try {
-            const user = {
-                id: crypto.randomUUID(),
-                username: 'testPOST',
-                score: 1000
-            }
-
             const url = `https://whakeamole-default-rtdb.europe-west1.firebasedatabase.app/users/${user.id}.json`
             const response = await fetch(url, {
                 method: "PATCH",

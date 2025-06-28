@@ -5,8 +5,12 @@ import {PlayerData} from "./PlayerData.tsx";
 import {Mole} from "./Mole.tsx";
 import {Timer} from "./Timer.tsx";
 import type {GameStatus} from "../types/GameStatus.ts";
+import {userActions} from "../stores/user.ts";
+import {useDispatch, useSelector} from "react-redux";
 
 export function Gameboard({updateGameState}: { updateGameState: (status: GameStatus) => void }) {
+    const dispatch = useDispatch()
+    const user = useSelector((state) => state.user);
 
     const MOLES_NUMBER = 12;
     const SCORE_INCREMENTATION = 100;
@@ -20,8 +24,6 @@ export function Gameboard({updateGameState}: { updateGameState: (status: GameSta
             isTouched: false
         }))
     );
-
-    const [score, setScore] = useState<number>(0);
 
     function onMoleClick(moleId: string) {
         whackMole(moleId);
@@ -46,7 +48,7 @@ export function Gameboard({updateGameState}: { updateGameState: (status: GameSta
      * Update the score to 100
      */
     function updateScore() {
-        setScore(score => score + SCORE_INCREMENTATION)
+        dispatch(userActions.updateUserScore(SCORE_INCREMENTATION));
     }
 
     useEffect(() => {
@@ -88,7 +90,7 @@ export function Gameboard({updateGameState}: { updateGameState: (status: GameSta
         <StyledGameboard>
             <div className="gameboard">
                 <div className="gameboard__container">
-                    <PlayerData score={score}></PlayerData>
+                    <PlayerData score={user.score}></PlayerData>
                     <Timer updateGameState={updateGameState}></Timer>
                     <ul className="gameboard__list">
                         {moles.map((mole: MoleType) => (
