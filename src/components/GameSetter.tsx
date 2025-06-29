@@ -67,7 +67,7 @@ export function GameSetter() {
 
     return (
         <StyledGameContainer delay={TIMES_UP_DELAY_MS}>
-            {error && <p className="error">An error has occurred. Sorry for the inconvenience : {error} </p>}
+            {error && <p className="error" data-testid="data-patch-error">An error has occurred. Sorry for the inconvenience : {error} </p>}
             {!error && <div className="game_container">
                 {game.status === 'idle' && <GameIntroduction updateGameState={startGame}></GameIntroduction>}
                 {game.status === 'playing' && <Gameboard></Gameboard>}

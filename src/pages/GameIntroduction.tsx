@@ -20,7 +20,7 @@ export function GameIntroduction({updateGameState}: { updateGameState: () => voi
     }
 
     return (
-        <StyledGameIntroduction className="game-introduction">
+        <StyledGameIntroduction data-testid="game-introduction-component" className="game-introduction">
             <img className="game-introduction__title" src="/logo.png" alt="Whack a mole"/>
             <div className="game-introduction__container">
                 <p>You have 2 minutes to whack as maximum of mole as possible</p>
@@ -28,8 +28,8 @@ export function GameIntroduction({updateGameState}: { updateGameState: () => voi
 
                 <form className='game-introduction__form' onSubmit={onStart}>
                     <label htmlFor="player-name">Please enter your name</label>
-                    <input id="player-name" className="game-introduction__input" ref={playerName} type="text" required maxLength={15}></input>
-                    <Button>Play</Button>
+                    <input data-testid="game-introduction__form-input" id="player-name" className="game-introduction__input" ref={playerName} type="text" required maxLength={15}></input>
+                    <Button data-testid="game-introduction__form-button">Play</Button>
                 </form>
             </div>
         </StyledGameIntroduction>

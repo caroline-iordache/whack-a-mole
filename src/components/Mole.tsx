@@ -18,10 +18,10 @@ export const Mole = memo(function Mole({mole, onMoleClick}: {
             {!mole.isHidden && (
                 <>
                     {mole.isTouched &&
-                        <img src='/WAM_Mole_touched.png' alt='Hole'/>}
+                        <img src='/WAM_Mole_touched.png' alt='Mole touched'/>}
 
                     {!mole.isTouched &&
-                        <img src='/WAM_Mole.png' alt='Mole' onClick={() => {
+                        <img src='/WAM_Mole.png' alt='Mole not touched' onClick={() => {
                             audio.current?.play();
                             onMoleClick(mole)
                         }}/>}

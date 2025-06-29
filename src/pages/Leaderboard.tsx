@@ -29,12 +29,12 @@ export function Leaderboard() {
     }, [dispatch]);
 
     return (
-        <StyledLeaderboard className="leaderboard">
-            {users.errors && <p>An error has occurred, we cannot get the users highest scores </p>}
+        <StyledLeaderboard data-testid="leaderboard-component" className="leaderboard">
+            {users.errors && <p data-testid="data-leaderboard__error">An error has occurred, we cannot get the users highest scores </p>}
             {!users.errors &&
                 <>
                     <h1>{users.limit && <span>{users.limit} </span>}Highest scores</h1>
-                    <ol className='leaderboard__list'>
+                    <ol data-testid="data-leaderboard__list" className='leaderboard__list'>
                         {users.users.map((user: UserType) => (
                             <li className='leaderboard__items' key={user.id}>
                                 <span>{user.username}</span>
@@ -44,7 +44,7 @@ export function Leaderboard() {
                     </ol>
                 </>
             }
-            <Button onClick={retry}>Play again</Button>
+            <Button data-testid="data-leaderboard__button" onClick={retry}>Play again</Button>
         </StyledLeaderboard>
     )
 }

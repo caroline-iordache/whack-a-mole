@@ -25,7 +25,7 @@ export function Timer() {
 
     return (
         <div className="timer">
-            <p>{getTimerInMinutes()}</p>
+            <p data-testid="timer">{getTimerInMinutes()}</p>
         </div>
     )
 }

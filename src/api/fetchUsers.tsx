@@ -6,9 +6,6 @@ export async function fetchUsers(): Promise<UserType[]> {
             headers: {'Content-Type': 'application/json'},
         });
 
-        if (!response.ok) {
-            throw new Error(response.statusText)
-        }
         const usersFetched: Record<string, UserType> = await response?.json();
         return Object.entries(usersFetched).map(([, user]: [string, UserType]) => ({
             ...user,

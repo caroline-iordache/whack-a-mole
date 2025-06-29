@@ -18,6 +18,7 @@ const usersSlice = createSlice({
             state.errors = '';
         },
         setErrors: (state, action: { payload: string }) => {
+            state.users = [];
             state.errors = action.payload;
         }
     }

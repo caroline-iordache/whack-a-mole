@@ -10,8 +10,8 @@ import type {RootState} from "../stores";
 
 export function Gameboard() {
     const dispatch = useDispatch()
-    const timer = useSelector((state:RootState) => state.timer);
-    const game = useSelector((state:RootState) => state.game);
+    const timer = useSelector((state: RootState) => state.timer);
+    const game = useSelector((state: RootState) => state.game);
 
     const MOLES_NUMBER = 12;
     const MOLE_VISIBILITY_MS = 1200;
@@ -34,7 +34,7 @@ export function Gameboard() {
                 if (mole.id === moleId) {
                     return {...mole, isTouched: true}
                 }
-                return {...mole}
+                return mole;
             })
         )
     }, [setMoles]);
@@ -79,7 +79,7 @@ export function Gameboard() {
                 if (moleIndex === index && !mole.isTouched) {
                     return {...mole, isHidden: hideMole};
                 }
-                return {...mole};
+                return mole;
             }));
         }
 
@@ -100,7 +100,7 @@ export function Gameboard() {
     }, []);
 
     return (
-        <StyledGameboard>
+        <StyledGameboard data-testid="gameboard-component">
             <div className="gameboard">
                 <div className="gameboard__container">
                     <PlayerData>
@@ -108,7 +108,7 @@ export function Gameboard() {
                     </PlayerData>
                     <ul className="gameboard__list">
                         {moles.map((mole: MoleType) => (
-                            <li key={mole.id}>
+                            <li data-testid="data-moles-list" key={mole.id}>
                                 <Mole mole={mole} onMoleClick={onMoleClick}></Mole>
                             </li>
                         ))}

@@ -9,6 +9,7 @@ const userSlice = createSlice({
     },
     reducers: {
         resetStatus: (state) => {
+            state.id = crypto.randomUUID();
             state.username = '';
             state.score = 0;
         },
