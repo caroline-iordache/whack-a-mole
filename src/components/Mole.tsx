@@ -15,21 +15,24 @@ export const Mole = memo(function Mole({mole, onMoleClick}: {
 
     return (
         <StyledMole>
-            {!mole.isHidden && !mole.isTouched &&
-                <img src='/WAM_Mole.png' alt='Mole' onClick={() => {
-                    audio.current?.play();
-                    onMoleClick(mole)
-                }}/>}
+            {!mole.isHidden && (
+                <>
+                    {mole.isTouched &&
+                        <img src='/WAM_Mole_touched.png' alt='Hole'/>}
 
-            {!mole.isHidden && mole.isTouched &&
-                <img src='/WAM_Mole_touched.png' alt='Hole'/>}
+                    {!mole.isTouched &&
+                        <img src='/WAM_Mole.png' alt='Mole' onClick={() => {
+                            audio.current?.play();
+                            onMoleClick(mole)
+                        }}/>}
+                </>
+            )}
 
             {mole.isHidden &&
                 <img src='/WAM_Hole.png' alt='Hole'/>}
 
-            <CSSTransition className="scoreUp" in={mole.isTouched} unmountOnExit nodeRef={scoreUpRef} timeout={0}
-                           classNames="scoreUp">
-                <span ref={scoreUpRef}>+ {game.scoreUpdate}</span>
+            <CSSTransition className="scoreUp" in={mole.isTouched} unmountOnExit nodeRef={scoreUpRef} timeout={0} classNames="scoreUp">
+                <span ref={scoreUpRef}>{game.scoreUpdate}</span>
             </CSSTransition>
 
         </StyledMole>

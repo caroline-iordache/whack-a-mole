@@ -10,7 +10,7 @@ export function PlayerData({children}: { children: ReactNode }) {
 
     return (
         <StyledPlayerData>
-            <DataDisplay iconName={'icon-cool2'}>
+            <DataDisplay iconName={'icon-cool2'} width={320}>
                 {user.username}
             </DataDisplay>
 

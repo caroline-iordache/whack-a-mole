@@ -1,6 +1,6 @@
 import {createSlice} from "@reduxjs/toolkit";
 
-const INITIAL_TIMER_VALUE = 120;
+const INITIAL_TIMER_VALUE = 1;
 
 const timerSlice = createSlice({
     name: 'timer',

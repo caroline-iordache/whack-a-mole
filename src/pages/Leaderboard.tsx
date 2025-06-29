@@ -6,7 +6,9 @@ import {useDispatch, useSelector} from "react-redux";
 import {userActions} from "../stores/user.ts";
 import type {RootState} from "../stores";
 import {timerActions} from "../stores/timer.ts";
-
+import {useEffect} from "react";
+import {fetchUsers} from "../api/fetchUsers.tsx";
+import {usersActions} from "../stores/users.ts";
 
 export function Leaderboard() {
     const dispatch = useDispatch();
@@ -18,12 +20,20 @@ export function Leaderboard() {
         dispatch(timerActions.resetTimer());
     }
 
+    useEffect(() => {
+        fetchUsers().then((users: UserType[]) => {
+            dispatch(usersActions.setUsers(users));
+        }).catch((error: string) => {
+            dispatch(usersActions.setErrors(error));
+        });
+    }, [dispatch]);
+
     return (
         <StyledLeaderboard className="leaderboard">
             {users.errors && <p>An error has occurred, we cannot get the users highest scores </p>}
             {!users.errors &&
                 <>
-                    <h1>{users.limit && users.limit }Highest scores</h1>
+                    <h1>{users.limit && <span>{users.limit} </span>}Highest scores</h1>
                     <ol className='leaderboard__list'>
                         {users.users.map((user: UserType) => (
                             <li className='leaderboard__items' key={user.id}>
@@ -34,7 +44,7 @@ export function Leaderboard() {
                     </ol>
                 </>
             }
-            <Button onClick={retry}>Retry</Button>
+            <Button onClick={retry}>Play again</Button>
         </StyledLeaderboard>
     )
 }

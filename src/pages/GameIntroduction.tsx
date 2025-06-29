@@ -1,4 +1,3 @@
-import type {GameStatus} from "../types/GameStatus.ts";
 import styled from "styled-components";
 import {type FormEvent, useRef} from "react";
 import {useDispatch, useSelector} from "react-redux";
@@ -6,7 +5,7 @@ import {userActions} from "../stores/user.ts";
 import {Button} from "../components/Button.tsx";
 import type {RootState} from "../stores";
 
-export function GameIntroduction({updateGameState}: { updateGameState: (status: GameStatus) => void }) {
+export function GameIntroduction({updateGameState}: { updateGameState: () => void }) {
     const dispatch = useDispatch()
     const playerName = useRef<HTMLInputElement>(null);
     const game = useSelector((state: RootState) => state.game);
@@ -16,7 +15,7 @@ export function GameIntroduction({updateGameState}: { updateGameState: (status: 
 
         if (playerName.current?.value) {
             dispatch(userActions.setUsername(playerName.current.value))
-            updateGameState('playing')
+            updateGameState()
         }
     }
 
@@ -29,7 +28,7 @@ export function GameIntroduction({updateGameState}: { updateGameState: (status: 
 
                 <form className='game-introduction__form' onSubmit={onStart}>
                     <label htmlFor="player-name">Please enter your name</label>
-                    <input id="player-name" className="game-introduction__input" ref={playerName} type="text" required></input>
+                    <input id="player-name" className="game-introduction__input" ref={playerName} type="text" required maxLength={15}></input>
                     <Button>Play</Button>
                 </form>
             </div>

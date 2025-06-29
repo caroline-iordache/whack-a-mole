@@ -2,7 +2,6 @@ import {Gameboard} from "../pages/Gameboard.tsx";
 import {GameIntroduction} from "../pages/GameIntroduction.tsx";
 import {Leaderboard} from "../pages/Leaderboard.tsx";
 import {useEffect, useRef, useState} from "react";
-import type {GameStatus} from "../types/GameStatus.ts";
 import styled from "styled-components";
 import {useDispatch, useSelector} from "react-redux";
 import {useHammerCursor} from "../hooks/useHammerCursor.tsx";
@@ -11,7 +10,6 @@ import {CSSTransition} from 'react-transition-group';
 import type {RootState} from "../stores";
 import {usersActions} from "../stores/users.ts";
 import type {UserType} from "../types/User.ts";
-import {fetchUsers} from "../api/fetchUsers.tsx";
 import {patchUsers} from "../api/patchUsers.tsx";
 
 export function GameSetter() {
@@ -23,20 +21,25 @@ export function GameSetter() {
     const timesUpRef = useRef(null)
     const [showTimesUp, setShowTimesUp] = useState(false);
     const TIMES_UP_DELAY_MS = 2000;
+
+    /**
+     * Hook to show the hammer cursor
+     */
     useHammerCursor()
 
-    function updateGameState(gameState: GameStatus) {
-        dispatch(gameActions.updateGameStatus(gameState));
+    /**
+     * Start the game by updating the state
+     */
+    function startGame() {
+        dispatch(gameActions.updateGameStatus('playing'));
     }
 
-    useEffect(() => {
-        fetchUsers().then((users: UserType[]) => {
-            dispatch(usersActions.setUsers(users));
-        }).catch((error: string) => {
-            dispatch(usersActions.setErrors(error));
-        });
-    }, [dispatch]);
-
+    /**
+     * When timer === 0
+     * Show the text animation time's up
+     * Update the score with the new one
+     * End the game by updating the game status
+     */
     useEffect(() => {
         async function endGame() {
             const currentUser: UserType = {
@@ -64,14 +67,14 @@ export function GameSetter() {
 
     return (
         <StyledGameContainer delay={TIMES_UP_DELAY_MS}>
-            {error && <p className="error">An error has occured. Sorry for the inconvenience : {error} </p>}
+            {error && <p className="error">An error has occurred. Sorry for the inconvenience : {error} </p>}
             {!error && <div className="game_container">
-                {game.status === 'idle' && <GameIntroduction updateGameState={updateGameState}></GameIntroduction>}
+                {game.status === 'idle' && <GameIntroduction updateGameState={startGame}></GameIntroduction>}
                 {game.status === 'playing' && <Gameboard></Gameboard>}
                 {game.status === 'end' && <Leaderboard></Leaderboard>}
 
                 <CSSTransition in={showTimesUp} unmountOnExit nodeRef={timesUpRef} timeout={0} classNames="timesUp">
-                    <p ref={timesUpRef}>Times up</p>
+                    <p ref={timesUpRef}>Time's up</p>
                 </CSSTransition>
 
             </div>}
@@ -84,7 +87,8 @@ const StyledGameContainer = styled.section<{ delay: number }>`
     display: flex;
     justify-content: center;
     align-items: center;
-
+    margin-top: 100px;
+    
     .error {
         font-size: 20px;
         background-color: rgba(255, 255, 255, 0.8);
