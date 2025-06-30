@@ -7,8 +7,9 @@ export async function fetchUsers(): Promise<UserType[]> {
         });
 
         const usersFetched: Record<string, UserType> = await response?.json();
-        return Object.entries(usersFetched).map(([, user]: [string, UserType]) => ({
+        return Object.entries(usersFetched).map(([id, user]: [string, UserType]) => ({
             ...user,
+            id,
         }));
     } catch (error: unknown) {
         throw (error instanceof Error ? error.message : "Unknown error");
